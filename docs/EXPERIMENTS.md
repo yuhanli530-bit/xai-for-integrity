@@ -1,5 +1,7 @@
 # Experimental plan and claim boundaries
 
+The full forward-looking work queue is in [`TODO.md`](../TODO.md). It breaks the work into gated stages, spells out the planned job counts and deliverables, and distinguishes ready analysis from methods that still need implementation. No planned large experiment below has been launched unless explicitly identified as existing evidence.
+
 ## Research question
 
 Does making explanation representations spatially decodable improve artifact localization, and do the resulting explanations actually depend on the visual evidence they describe?
@@ -22,6 +24,8 @@ Reported on one seed and 1,000 SynthScars test images:
 Paired image bootstrap intervals for localization were positive in the historical analysis. They capture image-sampling uncertainty only, not training-seed variation or selection after test feedback. The test set is exploratory for all subsequent method choices.
 
 ## Confirmatory experiment sequence
+
+The first large training batch is **9 full runs**: baseline, G, and P, each on seeds 42/43/44. This count excludes smoke checks and engineering preflights. P and the multi-seed runner are not implemented yet, so this matrix is not launchable until those gates pass. Later SAE, external-domain, intervention, and auditor studies are conditional work packages described in `TODO.md`; they have no results or fixed sample counts yet.
 
 ### E1. Replication and gradient-routing comparison
 
