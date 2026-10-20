@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Claim-level visual intervention records",
+  "type": "object",
+  "required": ["image_id", "source_group", "claim_id", "arm", "intervention", "status"],
+  "properties": {
+    "image_id": {"type": "string"},
+    "source_group": {"type": "string"},
+    "claim_id": {"type": "string"},
+    "arm": {"enum": ["baseline", "G", "P"]},
+    "intervention": {"enum": ["intact", "referent_occlusion", "matched_control_occlusion"]},
+    "status": {"enum": ["complete", "failed", "missing"]},
+    "output_text": {"type": ["string", "null"]},
+    "claim_supported": {"type": ["boolean", "null"]},
+    "output_change_appropriate": {"type": ["boolean", "null"]},
+    "annotator_id": {"type": ["string", "null"]}
+  },
+  "additionalProperties": false
+}

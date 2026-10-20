@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Per-image metrics for XAI for Integrity",
+  "type": "object",
+  "required": ["image_id", "seed", "arm", "split", "status"],
+  "properties": {
+    "image_id": {"type": "string", "minLength": 1},
+    "source_group": {"type": "string", "minLength": 1},
+    "seed": {"type": "integer"},
+    "arm": {"enum": ["baseline", "G", "P"]},
+    "split": {"type": "string"},
+    "status": {"enum": ["complete", "failed", "missing"]},
+    "miou": {"type": ["number", "null"]},
+    "foreground_f1": {"type": ["number", "null"]},
+    "rouge_l_f1": {"type": ["number", "null"]},
+    "css": {"type": ["number", "null"]},
+    "empty_mask": {"type": ["boolean", "null"]},
+    "zero_overlap": {"type": ["boolean", "null"]},
+    "pixel_precision": {"type": ["number", "null"]},
+    "pixel_recall": {"type": ["number", "null"]}
+  },
+  "additionalProperties": true
+}
