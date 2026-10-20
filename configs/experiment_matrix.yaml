@@ -26,6 +26,17 @@ arms:
   - id: P
     objective: G_with_auxiliary_gradient_routing_that_protects_native_mask_branch
     status: proposed; implementation_and_gradient_gate_pending
+  - id: sae_causal_posthoc
+    method_line: sparse_causal_evidence_concepts
+    objective: exact_encoder_SAE_features_with_claim_token_activation_patching
+    train_base_model: false
+    status: planned; exact_encoder_and_feature_causal_specificity_gates_pending
+  - id: sae_causal_gated
+    method_line: sparse_causal_evidence_concepts
+    objective: claim_to_feature_selector_with_counterfactual_consistency
+    train_base_model: false
+    depends_on: sae_causal_posthoc
+    status: planned; only_run_if_posthoc_gates_pass
 evaluation:
   exploratory_test:
     images: 1000
@@ -42,6 +53,9 @@ analysis:
     status: ready_for_annotated_intervention_csv
   - script: analysis/audit_utility.py
     status: ready_for_blinded_audit_scores_and_dev_frozen_thresholds
+  - sae_feature_reconstruction_error_l0_dead_feature_rate_and_seed_stability
+  - claim_token_logprob_causal_effect_vs_matched_random_feature_control
+  - sae_patch_support_iou_and_referent_vs_matched_region_intervention_margin
 resource_policy:
   model_weights_in_git: false
   datasets_in_git: false

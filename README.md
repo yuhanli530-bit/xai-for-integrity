@@ -1,6 +1,8 @@
 # XAI for Integrity
 
-Research code for testing whether forensic explanations are grounded in image regions and whether those explanations help an independent reviewer detect errors.
+Research code for testing whether forensic explanations are grounded in image regions, causally depend on the evidence they name, and help an independent reviewer detect errors.
+
+The project now tracks two distinct method lines: supervised spatial grounding (G/P) and SAE-based sparse causal evidence concepts. The latter is a staged research proposal with feasibility gates, not implemented or validated code yet. See [`docs/METHOD_LINES.md`](docs/METHOD_LINES.md) for the method and literature rationale.
 
 ## Current evidence
 
@@ -14,7 +16,7 @@ The included G method adds an auxiliary region loss for the prediction states th
 - `scripts/launch_native.py`, `scripts/evaluate_official.py`: finite train/evaluation launchers.
 - `analysis/`: frozen-result collection and training-log audits, plus generic paired bootstrap and intervention analysis.
 - `scripts/build_interventions.py`: deterministic referent-region and matched-control occlusion image generation.
-- `configs/experiment_matrix.yaml`: planned baseline/G/P repeats and holdout analyses. It does not launch work by itself.
+- `configs/experiment_matrix.yaml`: planned G/P and SAE-Causal experiments. It does not launch work by itself.
 
 Model weights, SynthScars, generated outputs, credentials, and GPU-server artifacts are intentionally external. The repository does not bundle them.
 
@@ -41,4 +43,4 @@ The model and dataset are based on [LEGION](https://github.com/opendatalab/LEGIO
 
 ## Status
 
-The code in this repository is an experiment handoff. The current single-seed G result is exploratory; P and all new generalization/faithfulness runs remain pending until launched and independently reviewed.
+The code in this repository is an experiment handoff. The current single-seed G result is exploratory; P, SAE-Causal, and all new generalization/faithfulness runs remain pending until implemented where needed, launched, and independently reviewed.
