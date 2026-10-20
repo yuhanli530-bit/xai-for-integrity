@@ -1,0 +1,45 @@
+{
+  "schema": "native_reason_grounding_frozen_source_v1",
+  "files": [
+    {
+      "path": "official_explanation_response_20261010/explanation_data.py",
+      "sha256": "e7fd81df89b29b604d7b79255eebc8315fbbdc21428ed4ed069e4bcec89de92b",
+      "bytes": 12550
+    },
+    {
+      "path": "official_reason_grounding_20261010/METHOD.md",
+      "sha256": "9f863afde3623decdb61b021790ebe4546cecfec8b8420386a6227de84afa0c3",
+      "bytes": 3528
+    },
+    {
+      "path": "official_reason_grounding_20261010/PROTOCOL.json",
+      "sha256": "3475008a07f80217f83ddfb397db82caf0fa33db67474bc90c6cddfe596ed748",
+      "bytes": 2026
+    },
+    {
+      "path": "official_reason_grounding_20261010/objective_reason_grounding.py",
+      "sha256": "6bfa73ac681b7c9527153264ffb44044238e183570e12e7d7e937a404361f799",
+      "bytes": 25250
+    },
+    {
+      "path": "official_reason_grounding_20261010/runner/revision1/_deps/delta_checkpoint.py",
+      "sha256": "a5c0504e1461f97a9a6dcf5387e8848f48119e66c632ced8866f1b5846d311f2",
+      "bytes": 22474
+    },
+    {
+      "path": "official_reason_grounding_20261010/runner/revision1/_deps/legion_text_adapter.py",
+      "sha256": "281293c11d99487f8934248cc60d30867036792b7ea5b43d6b26975e3e93757d",
+      "bytes": 9875
+    },
+    {
+      "path": "official_reason_grounding_20261010/runner/revision1/launch_official_reason_grounding.py",
+      "sha256": "4ae35ee2738cbf46fc862f1a3fba6d6a536c00aee0646f5d8d7380b0973ea324",
+      "bytes": 13414
+    },
+    {
+      "path": "official_reason_grounding_20261010/runner/revision1/official_reason_grounding_train.py",
+      "sha256": "d711e3f3bf3b15e4fcc09320a5d64e52828d628a90961a69a35711f99ebf2ebc",
+      "bytes": 25913
+    }
+  ]
+}
