@@ -1,0 +1,50 @@
+schema: xai-integrity-experiment-matrix-v1
+status: planned_not_launchable_until_portability_and_P_gates_pass
+seed_policy:
+  confirmatory_seeds: [42, 43, 44]
+  image_statistics_unit: image_within_seed
+  training_replication_unit: seed
+  checkpoint: fixed_final_update
+training:
+  dataset: SynthScars
+  updates: 2109
+  effective_batch: 16
+  optimizer: AdamW
+  precision: bf16
+  world_size: 4
+  author_validation_calls: 27
+arms:
+  - id: baseline
+    objective: native_LEGION_only
+    added_auxiliary_loss: false
+    status: required_control
+  - id: G
+    objective: native_plus_explanation_state_region_BCE_Dice
+    coefficient: 0.1
+    added_decoder_calls: true
+    status: existing_exploratory_seed42; replication_pending
+  - id: P
+    objective: G_with_auxiliary_gradient_routing_that_protects_native_mask_branch
+    status: proposed; implementation_and_gradient_gate_pending
+evaluation:
+  exploratory_test:
+    images: 1000
+    note: already_used_for_method_iteration; no confirmatory claims
+  external_holdout:
+    status: select_and_freeze_before_inference
+    candidate_benchmarks: [LOKI]
+analysis:
+  - paired_image_bootstrap_10000
+  - per_seed_summary
+  - source_clustered_external_interval
+  - localization_error_strata
+  - script: analysis/intervention_analysis.py
+    status: ready_for_annotated_intervention_csv
+  - script: analysis/audit_utility.py
+    status: ready_for_blinded_audit_scores_and_dev_frozen_thresholds
+resource_policy:
+  model_weights_in_git: false
+  datasets_in_git: false
+  automatic_retry: false
+  automatic_full_launch_after_preflight: false
+  unrelated_process_termination: false
