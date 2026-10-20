@@ -17,6 +17,7 @@ The included G method adds an auxiliary region loss for the prediction states th
 - `analysis/`: frozen-result collection and training-log audits, plus generic paired bootstrap and intervention analysis.
 - `scripts/build_interventions.py`: deterministic referent-region and matched-control occlusion image generation.
 - `configs/experiment_matrix.yaml`: planned G/P and SAE-Causal experiments. It does not launch work by itself.
+- `TODO.md`: prioritized backlog for the two method lines, integrity audits, and reproducibility handoff.
 
 Model weights, SynthScars, generated outputs, credentials, and GPU-server artifacts are intentionally external. The repository does not bundle them.
 
