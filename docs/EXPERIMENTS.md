@@ -25,13 +25,13 @@ Paired image bootstrap intervals for localization were positive in the historica
 
 ## Confirmatory experiment sequence
 
-The first large training batch is **9 full runs**: baseline, G, and P, each on seeds 42/43/44. This count excludes smoke checks and engineering preflights. P and the multi-seed runner are not implemented yet, so this matrix is not launchable until those gates pass. Later SAE, external-domain, intervention, and auditor studies are conditional work packages described in `TODO.md`; they have no results or fixed sample counts yet.
+The first training batch is **3 full runs**: baseline, G, and P, each with seed 42. This count excludes smoke checks and engineering preflights. It is a single-seed comparison and does not estimate training-seed variability. P is not implemented yet, so this matrix is not launchable until its gradient gate passes. Later SAE, external-domain, intervention, and auditor studies are conditional work packages described in `TODO.md`; they have no results or fixed sample counts yet.
 
 ### E1. Replication and gradient-routing comparison
 
-Run baseline, G, and P from the same initialization on seeds 42, 43, and 44, with the same data order policy, update count, validation schedule, and fixed-final checkpoint. P is the proposed variant that routes auxiliary gradients to explanation-side parameters while preserving the native mask branch; it must pass a real-model gradient-routing check before any full run. Report added decoder calls, mask exposures, wall time, and peak memory. Do not call this equal-compute unless a measured compute-matched control is added.
+Run baseline, G, and P from the same seed-42 initialization, with the same data order policy, update count, validation schedule, and fixed-final checkpoint. P is the proposed variant that routes auxiliary gradients to explanation-side parameters while preserving the native mask branch; it must pass a real-model gradient-routing check before any full run. Report added decoder calls, mask exposures, wall time, and peak memory. Do not call this equal-compute unless a measured compute-matched control is added.
 
-Primary outcomes: foreground IoU/F1, mIoU, ROUGE-L, CSS, empty-mask count, zero-overlap count, pixel precision/recall, and per-image paired differences. Report each seed separately and a seed-level summary. Do not pool images across seeds as if they were independent training replicates.
+Primary outcomes: foreground IoU/F1, mIoU, ROUGE-L, CSS, empty-mask count, zero-overlap count, pixel precision/recall, and per-image paired differences. Report paired image-level results for seed 42. Image-level intervals do not measure variation across training seeds.
 
 ### E2. Independent-domain evaluation
 

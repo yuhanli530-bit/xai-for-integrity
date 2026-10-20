@@ -20,7 +20,7 @@ The intended final study compares native baseline, G, SAE-Causal, and the combin
 - **Blocked by data/protocol:** choose, license, freeze, and document the dataset or labels before the experiment.
 - **Planned run:** no result exists yet. A row becomes complete only after logs, raw predictions, analysis outputs, and limitations are recorded.
 
-The current code has a seed-42 launcher and evaluation path. It does not yet provide a reviewed multi-seed job orchestrator, a portable dataset manifest, or the P/SAE methods. See `docs/REPRODUCE.md` before asking another lab to run jobs. The current 1,000-image SynthScars test subset has already been used during method iteration; it is exploratory, not a confirmatory test set.
+Use one training seed (42) throughout the planned study. The current code has a seed-42 launcher and evaluation path. It does not yet provide a portable dataset manifest or the P/SAE methods. See `docs/REPRODUCE.md` before asking another lab to run jobs. The current 1,000-image SynthScars test subset has already been used during method iteration; it is exploratory, not a confirmatory test set.
 
 ## Run order and gates
 
@@ -37,24 +37,24 @@ The current code has a seed-42 launcher and evaluation path. It does not yet pro
 
 ### Stage 1 — Large confirmatory training comparison (E1)
 
-**Purpose:** test whether spatial grounding is reproducible across training seeds, and whether P protects the native mask branch.
+**Purpose:** compare the three methods under one fixed training seed and test whether P protects the native mask branch. This single-seed study cannot estimate training-seed variability.
 
-| Arm | Definition | Seeds | Full training jobs |
+| Arm | Definition | Seed | Full training jobs |
 |---|---|---:|---:|
-| Baseline | Native LEGION objective | 42, 43, 44 | 3 |
-| G | Baseline + explanation-state region BCE/Dice, coefficient 0.1 | 42, 43, 44 | 3 |
-| P | G objective with reviewed auxiliary-gradient routing | 42, 43, 44 | 3 |
-| **Total** | 3 arms × 3 seeds |  | **9** |
+| Baseline | Native LEGION objective | 42 | 1 |
+| G | Baseline + explanation-state region BCE/Dice, coefficient 0.1 | 42 | 1 |
+| P | G objective with reviewed auxiliary-gradient routing | 42 | 1 |
+| **Total** | 3 arms × 1 seed |  | **3** |
 
-Use matched initialization per seed, the same data-order policy, 2,109 updates, effective batch 16, AdamW, bf16, world size 4, validation schedule, and fixed-final-update checkpoint as specified in `configs/experiment_matrix.yaml`. Before the nine runs:
+Use the same seed-42 initialization and data-order policy, 2,109 updates, effective batch 16, AdamW, bf16, world size 4, validation schedule, and fixed-final-update checkpoint as specified in `configs/experiment_matrix.yaml`. Before the three runs:
 
 - [ ] Implement P and verify with the real model that auxiliary gradients reach intended explanation-side parameters and do not reach the protected native-mask parameters.
 - [ ] Verify zero auxiliary coefficient reproduces baseline outputs/gradients within a predeclared numerical tolerance; verify nonzero coefficient has the intended gradient path.
-- [ ] Review a small engineering benchmark and estimate the 9-run wall time/storage from measurement. The historical G run adds SAM decoder calls and mask supervision, so do not claim equal compute.
+- [ ] Review a small engineering benchmark and estimate the 3-run wall time/storage from measurement. The historical G run adds SAM decoder calls and mask supervision, so do not claim equal compute.
 - [ ] If the paper will claim gains at equal compute, design and run a compute-matched control (match measured FLOPs or accelerator time, define the control before seeing confirmatory test results). Otherwise state the additional compute plainly.
-- [ ] Launch all planned arm/seed combinations through a manifest-driven runner; no best-seed or best-checkpoint selection on test data.
+- [ ] Launch all three arm runs through a manifest-driven runner; no best-seed or best-checkpoint selection on test data.
 
-**Primary report:** per-seed localization metrics (foreground IoU/F1, mIoU, pixel precision/recall), ROUGE-L/CSS, empty and zero-overlap rates, calibration/abstention if implemented, wall time, decoder calls, and peak memory. Include paired image-level intervals within each seed and a separate seed-level summary; do not treat images from one checkpoint as independent training replications.
+**Primary report:** localization metrics (foreground IoU/F1, mIoU, pixel precision/recall), ROUGE-L/CSS, empty and zero-overlap rates, calibration/abstention if implemented, wall time, decoder calls, and peak memory. Include paired image-level intervals for the fixed seed. State clearly that image bootstrap intervals quantify image-sampling uncertainty only; they do not quantify training-seed variability.
 
 **Artifacts per run:** immutable config and logs, checkpoint pointer/hash, per-image text and masks, metric JSON/CSV, resource record, and failure record. Store large weights/data outside Git; provide paths or access instructions, not copied assets.
 
@@ -77,8 +77,8 @@ This line does not retrain the base model for the post-hoc arm. It still require
 
 - [ ] Identify and document the exact encoder revision, layer/tensor, patch ordering, normalization, and preprocessing used by the model.
 - [ ] Test that the SAE hook disabled is numerically equivalent to the unmodified model; test round-trip patch indexing on synthetic and real batches.
-- [ ] Fit dictionary parameters using training-split activations only. Use at least three dictionary initialization seeds for stability estimates; select width, sparsity penalty, and checkpoints using training/validation only.
-- [ ] Report reconstruction error, activation sparsity/L0, dead-feature rate, feature stability across seeds, and resource cost. Freeze dictionary selection before held-out evaluation.
+- [ ] Fit dictionary parameters using training-split activations only. Use seed 42 for dictionary initialization; select width, sparsity penalty, and checkpoints using training/validation only.
+- [ ] Report reconstruction error, activation sparsity/L0, dead-feature rate, feature stability across examples and harmless transformations, and resource cost. Freeze dictionary selection before held-out evaluation.
 
 **B2 — Causal specificity gate**
 
@@ -97,7 +97,7 @@ This line does not retrain the base model for the post-hoc arm. It still require
 
 ### Stage 4 — Factorial method comparison (E5, conditional)
 
-Run only if E1 is complete and B1–B3 pass. Compare four cells on the same seeds and frozen data protocol:
+Run only if E1 is complete and B1–B3 pass. Compare four cells on the same seed-42 frozen data protocol:
 
 | Cell | Spatial grounding | SAE-Causal |
 |---|---|---|
@@ -106,9 +106,9 @@ Run only if E1 is complete and B1–B3 pass. Compare four cells on the same seed
 | SAE-Causal | No | Yes |
 | G + SAE-Causal | Yes | Yes |
 
-- [ ] First determine whether SAE-Causal is post-hoc or has a trained selector. Post-hoc evaluation reuses frozen E1 checkpoints; a trainable selector requires its own predeclared seeds and training jobs.
+- [ ] First determine whether SAE-Causal is post-hoc or has a trained selector. Post-hoc evaluation reuses frozen E1 checkpoints; a trainable selector uses the same fixed seed 42.
 - [ ] Implement the combined cell without changing the frozen E1 method definitions. Record any interaction in compute, labels, or architecture.
-- [ ] Use seeds 42/43/44 where training is repeated; report the exact number of additional jobs after the selector design is frozen. Do not silently count reused checkpoints as new training replications.
+- [ ] Use seed 42 for any additional training; report the exact number of additional jobs after the selector design is frozen. Do not silently count reused checkpoints as new training replications.
 - [ ] Evaluate localization, causal faithfulness, text quality, calibration/abstention, and latency separately. Report the grounding × SAE interaction and its uncertainty.
 
 ### Stage 5 — Large-scale intervention study (E3)
@@ -144,7 +144,7 @@ Run only after primary definitions are frozen; mark these as secondary analyses.
 - [ ] Ablate region-loss weight, annotated-token coverage, and decoder capacity for G/P. Use validation to choose settings; reserve the final holdout for one evaluation.
 - [ ] Compare SAE features with linear probes or simpler sparse dictionaries to test whether the added method complexity is useful.
 - [ ] Report abstention coverage versus risk, calibration, error discovery, localization, causal specificity, and utility as distinct outcomes.
-- [ ] Run paired bootstrap (10,000 resamples where configured), per-seed summaries, source-clustered external intervals, and failure analyses. Publish aggregate results and allowed per-example outputs without restricted images, activations, or weights.
+- [ ] Run paired bootstrap (10,000 resamples where configured), single-seed results, source-clustered external intervals, and failure analyses. Publish aggregate results and allowed per-example outputs without restricted images, activations, or weights.
 
 ## Handoff checklist for the student running jobs
 
@@ -158,8 +158,8 @@ Run only after primary definitions are frozen; mark these as secondary analyses.
 ## Next actions, in order
 
 1. Portability + frozen source-level manifests (Stage 0).
-2. Implement and review P gradient routing; validate the complete 9-job E1 matrix.
-3. Launch E1 and analyze seeds separately.
+2. Implement and review P gradient routing; validate the 3-job, single-seed E1 matrix.
+3. Launch the three E1 runs at seed 42 and analyze paired image-level results.
 4. Select/freeze the independent benchmark and run E2.
 5. Run SAE encoder/dictionary and causal-specificity gates (B1/B2); stop if they fail.
 6. Implement gated SAE-Causal and run the conditional factorial comparison only if justified.
@@ -168,6 +168,6 @@ Run only after primary definitions are frozen; mark these as secondary analyses.
 
 ## Ideas outside the committed experiment plan
 
-- [ ] Evaluate whether human-readable feature labels are stable across dictionary seeds and harmless input transformations before assigning names.
+- [ ] Evaluate whether human-readable feature labels are stable across harmless input transformations before assigning names.
 - [ ] Test whether causally localized feature groups reveal omitted or contradictory visual evidence that region masks miss.
 - [ ] Consider a reviewer interface showing claim, supporting patches, counterfactual effect, and uncertainty only after offline audit utility is established; evaluate it as a separate user study.

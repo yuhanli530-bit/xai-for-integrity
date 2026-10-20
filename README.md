@@ -17,13 +17,13 @@ The included G method adds an auxiliary region loss for the prediction states th
 - `analysis/`: frozen-result collection and training-log audits, plus generic paired bootstrap and intervention analysis.
 - `scripts/build_interventions.py`: deterministic referent-region and matched-control occlusion image generation.
 - `configs/experiment_matrix.yaml`: planned G/P and SAE-Causal experiments. It does not launch work by itself.
-- `TODO.md`: staged forward research plan, including the 9-run confirmatory training batch and gated SAE-Causal, external-domain, intervention, and auditor-utility studies.
+- `TODO.md`: staged forward research plan, including the 3-run, single-seed training batch and gated SAE-Causal, external-domain, intervention, and auditor-utility studies.
 
 Model weights, SynthScars, generated outputs, credentials, and GPU-server artifacts are intentionally external. The repository does not bundle them.
 
 ## Reproduction prerequisites
 
-This code targets the pinned LEGION/GLaMM training stack used by the experiment, including its prepared source tree, exact pretrained assets, and official SynthScars split. It is not a one-command public reproduction: access to the lab's prepared model bundle and a compatible four-GPU host is required. `docs/REPRODUCE.md` describes the required mount points, preflight, launch, evaluation, and analysis steps. The historical exact seed-42 run is preserved as a protocol; the next multi-seed and intervention experiments are separately identified as planned work.
+This code targets the pinned LEGION/GLaMM training stack used by the experiment, including its prepared source tree, exact pretrained assets, and official SynthScars split. It is not a one-command public reproduction: access to the lab's prepared model bundle and a compatible four-GPU host is required. `docs/REPRODUCE.md` describes the required mount points, preflight, launch, evaluation, and analysis steps. The historical exact seed-42 run is preserved as a protocol; the next single-seed and intervention experiments are separately identified as planned work.
 
 ## Quick start
 

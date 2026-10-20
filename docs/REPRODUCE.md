@@ -26,12 +26,12 @@ The currently copied historical code still contains lab-specific absolute paths 
 5. Run a short engineering benchmark on explicitly allocated GPUs. Never continue training from this checkpoint.
 6. Launch one fresh full run into a new output directory. Use the frozen seed/update schedule. Do not start automatically after preflight.
 7. After training completion, run the fixed full-denominator evaluation on the untouched split. Preserve all per-image outputs, failures, scorer version, and hashes.
-8. Run paired image bootstrap and stratified error analysis. Keep image-level and seed-level uncertainty distinct.
+8. Run paired image bootstrap and stratified error analysis. Use paired image-level uncertainty for the fixed seed; this does not measure training-seed variability.
 9. For E3/E4, create new held-out source clusters and freeze the intervention/annotation protocol before inference.
 
-The copied training entry point is a faithful historical seed-42 G bundle, not yet a multi-seed orchestration CLI. Once all external paths and pinned assets are present, run `scripts/run_native_seed42.sh 0,1,3,5 /new/output/path`, then `scripts/run_eval_seed42.sh /new/output/path/candidate_reason_grounding /new/output/path/STATUS.json /new/eval/path 0,1,3,5`. The evaluator checks the exact terminal training receipt before reading test files. Both output directories must be new.
+The copied training entry point is a faithful historical seed-42 G bundle, not yet a configurable multi-arm orchestration CLI. Once all external paths and pinned assets are present, run `scripts/run_native_seed42.sh 0,1,3,5 /new/output/path`, then `scripts/run_eval_seed42.sh /new/output/path/candidate_reason_grounding /new/output/path/STATUS.json /new/eval/path 0,1,3,5`. The evaluator checks the exact terminal training receipt before reading test files. Both output directories must be new.
 
-The matrix in `configs/experiment_matrix.yaml` is a plan; do not treat the three-seed baseline/G/P matrix as executable yet. P gradient routing and seed configurability require separate implementation and review gates.
+The matrix in `configs/experiment_matrix.yaml` is a plan; do not treat the single-seed baseline/G/P matrix as executable yet. P gradient routing requires implementation and review before launch.
 
 ## Results format
 
