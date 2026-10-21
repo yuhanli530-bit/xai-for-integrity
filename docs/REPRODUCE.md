@@ -37,4 +37,6 @@ The matrix in `configs/experiment_matrix.yaml` is a plan; do not treat the singl
 
 Use one row per image and arm. Required columns are `image_id`, `seed`, `arm`, `split`, `status`, `miou`, `foreground_f1`, `rouge_l_f1`, `css`, `empty_mask`, `zero_overlap`, `pixel_precision`, `pixel_recall`, and `source_group`. See `schemas/image_metrics.schema.json`.
 
+For the planned fixed-seed comparison, run `python analysis/paired_bootstrap.py results/image_metrics.csv --model-seed 42 --arms G P --output results/paired_bootstrap.json`. The bootstrap resamples paired images; its intervals do not estimate training-seed variability.
+
 For E3, use one row per image × claim × intervention × model. See `schemas/interventions.schema.json`. Keep raw inputs/outputs access-controlled; publish only permitted aggregates.

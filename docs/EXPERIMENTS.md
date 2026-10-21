@@ -23,11 +23,11 @@ Reported on one seed and 1,000 SynthScars test images:
 
 Paired image bootstrap intervals for localization were positive in the historical analysis. They capture image-sampling uncertainty only, not training-seed variation or selection after test feedback. The test set is exploratory for all subsequent method choices.
 
-## Confirmatory experiment sequence
+## Planned evaluation sequence
 
 The first training batch is **3 full runs**: baseline, G, and P, each with seed 42. This count excludes smoke checks and engineering preflights. It is a single-seed comparison and does not estimate training-seed variability. P is not implemented yet, so this matrix is not launchable until its gradient gate passes. Later SAE, external-domain, intervention, and auditor studies are conditional work packages described in `TODO.md`; they have no results or fixed sample counts yet.
 
-### E1. Replication and gradient-routing comparison
+### E1. Fixed-seed comparison and gradient-routing check
 
 Run baseline, G, and P from the same seed-42 initialization, with the same data order policy, update count, validation schedule, and fixed-final checkpoint. P is the proposed variant that routes auxiliary gradients to explanation-side parameters while preserving the native mask branch; it must pass a real-model gradient-routing check before any full run. Report added decoder calls, mask exposures, wall time, and peak memory. Do not call this equal-compute unless a measured compute-matched control is added.
 

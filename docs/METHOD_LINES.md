@@ -10,7 +10,7 @@ The project asks whether an explanation is tied to the visual evidence it names,
 
 **Primary question.** Does direct mask supervision improve artifact localization, and does any localization gain transfer to claim-level faithfulness under controlled visual interventions?
 
-**Key controls.** Native baseline; G; P only after the gradient check; matched initialization, data order, update count, and final-checkpoint policy; measured decoder calls, wall time, and memory. Include a compute-matched control before making equal-compute claims.
+**Key controls.** Native baseline; G; P only after the gradient check; one fixed seed (42), matched initialization, data order, update count, and final-checkpoint policy; measured decoder calls, wall time, and memory. This single-seed design does not estimate training-seed variability. Include a compute-matched control before making equal-compute claims.
 
 **Current evidence.** G has one exploratory seed-42 result on 1,000 images. The test set has already informed iteration, so it cannot serve as confirmatory evidence. The result supports only a pilot localization observation; it does not establish faithful text or improved audit decisions.
 
@@ -27,7 +27,7 @@ The project asks whether an explanation is tied to the visual evidence it names,
 ## Line B gates and experiments
 
 1. **B0, compatibility.** Identify the exact CLIP/ViT layer and tensor used by the existing model. Verify shape, preprocessing, patch-to-image mapping, and unchanged native outputs when the SAE path is disabled. Reject a pretrained SAE if its encoder revision/layer/normalization does not match.
-2. **B1, dictionary feasibility.** Train or adapt the SAE using train-only images. Report reconstruction error, L0 activity, dead features, feature stability across seeds, and qualitative examples reviewed blind to test labels. Compare TopK/BatchTopK against a linear sparse coding or dense-activation baseline.
+2. **B1, dictionary feasibility.** Train or adapt the SAE using train-only images with fixed seed 42. Report reconstruction error, L0 activity, dead features, stability across examples and harmless transformations, and qualitative examples reviewed blind to test labels. Cross-seed stability is not measured. Compare TopK/BatchTopK against a linear sparse coding or dense-activation baseline.
 3. **B2, causal feature audit.** On train/validation only, patch candidate features and matched random features. Measure claim-token log-probability changes, generated claim changes, and spatial overlap with the referent. Test reconstruction-preserving ablation/resampling as well as zero ablation; zeroing alone can create off-manifold states.
 4. **B3, method comparison.** Compare native baseline, post-hoc SAE explanation, and gated SAE-Causal. Keep G/P as a separate method line. After both lines pass independently, use a small factorial comparison (baseline, G, SAE-Causal, G+SAE-Causal) to test complementarity.
 5. **B4, held-out claims.** Evaluate faithfulness with blinded claim-support labels and referent-vs-matched-control visual interventions. Report false claims, unsupported-claim abstentions, per-claim causal dependence, localization, and audit error-detection at a fixed false-alarm rate. Use a new source-disjoint test split; do not reuse the exploratory SynthScars test set.

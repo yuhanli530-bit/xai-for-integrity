@@ -3,6 +3,8 @@
 
 CSV must follow schemas/image_metrics.schema.json. Missing/failed rows are
 reported and cause a non-zero exit instead of silently changing denominators.
+The planned study uses one fixed training seed (42); these intervals quantify
+image-sampling uncertainty only, not training-seed variability.
 """
 import argparse
 import csv
@@ -21,7 +23,8 @@ def main():
     p.add_argument("csv", type=Path)
     p.add_argument("--control", default="baseline")
     p.add_argument("--arms", nargs="+", default=["G", "P"])
-    p.add_argument("--seeds", nargs="+", type=int, default=[42, 43, 44])
+    p.add_argument("--model-seed", type=int, default=42,
+                   help="fixed training seed present in the input table (default: 42)")
     p.add_argument("--bootstrap", type=int, default=10000)
     p.add_argument("--seed", type=int, default=20261021)
     p.add_argument("--output", type=Path, required=True)
@@ -36,47 +39,51 @@ def main():
             raise SystemExit(f"Duplicate row: {key}")
         index[key] = row
     problems = []
+    unexpected_seeds = sorted({key[0] for key in index if key[0] != str(args.model_seed)})
+    if unexpected_seeds:
+        raise SystemExit(f"Expected only model seed {args.model_seed}; found {unexpected_seeds}")
     rng = random.Random(args.seed)
     output = {"schema": "paired-bootstrap-v1", "csv": str(args.csv), "bootstrap_draws": args.bootstrap,
-              "resampling_unit": "image within each seed; seed summaries remain separate",
+              "model_seed": args.model_seed,
+              "resampling_unit": "paired image at a fixed training seed; does not measure training-seed variability",
               "failed_or_missing_rows": len(issues), "comparisons": []}
-    for seed in args.seeds:
-        for arm in args.arms:
-            keys = sorted({(s, image) for s, image, a in index if s == str(seed) and a == args.control} |
-                          {(s, image) for s, image, a in index if s == str(seed) and a == arm})
-            pairs = []
-            for s, image in keys:
-                left = index.get((s, image, args.control))
-                right = index.get((s, image, arm))
-                if left is None or right is None or left.get("status") != "complete" or right.get("status") != "complete":
-                    problems.append({"seed": seed, "image_id": image, "arms": [args.control, arm], "issue": "unpaired_or_incomplete"})
+    model_seed = str(args.model_seed)
+    for arm in args.arms:
+        keys = sorted({(s, image) for s, image, a in index if s == model_seed and a == args.control} |
+                      {(s, image) for s, image, a in index if s == model_seed and a == arm})
+        pairs = []
+        for s, image in keys:
+            left = index.get((s, image, args.control))
+            right = index.get((s, image, arm))
+            if left is None or right is None or left.get("status") != "complete" or right.get("status") != "complete":
+                problems.append({"seed": args.model_seed, "image_id": image, "arms": [args.control, arm], "issue": "unpaired_or_incomplete"})
+                continue
+            pairs.append((left, right))
+        result = {"model_seed": args.model_seed, "control": args.control, "arm": arm, "paired_n": len(pairs), "metrics": {}}
+        for metric in METRICS:
+            valid = []
+            for left, right in pairs:
+                try:
+                    x, y = float(left[metric]), float(right[metric])
+                except (TypeError, ValueError, KeyError):
+                    problems.append({"seed": args.model_seed, "metric": metric, "issue": "missing_metric"})
                     continue
-                pairs.append((left, right))
-            result = {"seed": seed, "control": args.control, "arm": arm, "paired_n": len(pairs), "metrics": {}}
-            for metric in METRICS:
-                valid = []
-                for left, right in pairs:
-                    try:
-                        x, y = float(left[metric]), float(right[metric])
-                    except (TypeError, ValueError, KeyError):
-                        problems.append({"seed": seed, "metric": metric, "issue": "missing_metric"})
-                        continue
-                    if not (math.isfinite(x) and math.isfinite(y)):
-                        problems.append({"seed": seed, "metric": metric, "issue": "nonfinite_metric"})
-                        continue
-                    valid.append(y - x)
-                if valid:
-                    means = []
-                    for _ in range(args.bootstrap):
-                        means.append(statistics.mean(valid[rng.randrange(len(valid))] for __ in valid))
-                    means.sort()
-                    result["metrics"][metric] = {
-                        "mean_delta": statistics.mean(valid),
-                        "ci95_percentile": [means[int(.025 * args.bootstrap)], means[min(args.bootstrap - 1, int(.975 * args.bootstrap))]],
-                        "positive_fraction": sum(v > 0 for v in valid) / len(valid),
-                        "ties": sum(v == 0 for v in valid),
-                    }
-            output["comparisons"].append(result)
+                if not (math.isfinite(x) and math.isfinite(y)):
+                    problems.append({"seed": args.model_seed, "metric": metric, "issue": "nonfinite_metric"})
+                    continue
+                valid.append(y - x)
+            if valid:
+                means = []
+                for _ in range(args.bootstrap):
+                    means.append(statistics.mean(valid[rng.randrange(len(valid))] for __ in valid))
+                means.sort()
+                result["metrics"][metric] = {
+                    "mean_delta": statistics.mean(valid),
+                    "ci95_percentile": [means[int(.025 * args.bootstrap)], means[min(args.bootstrap - 1, int(.975 * args.bootstrap))]],
+                    "positive_fraction": sum(v > 0 for v in valid) / len(valid),
+                    "ties": sum(v == 0 for v in valid),
+                }
+        output["comparisons"].append(result)
     output["pairing_issues"] = problems
     if issues or problems:
         output["status"] = "incomplete_denominator"
