@@ -43,6 +43,8 @@ For each held-out image, bind an explanation claim to its annotated referent. Pr
 
 The intervention analysis requires blinded human or independently qualified labels for whether the original claim is supported and whether the changed output is directionally appropriate. Similarity to the reference text alone is not a faithfulness label. Never use the official test images to tune the intervention, prompts, thresholds, or model.
 
+The v2 implementation separates input-only validity from blinded output assertion. Its primary outcome is the joint pattern `a_intact * (1 - a_referent) * a_control`; selective assertion drop and all three component rates are secondary. Do not subtract two appropriate-response rates: an ideal model is correct in both conditions. The planned manifest fixes the denominator independently of observed rows, and source groups are equally weighted. See [`INTERVENTIONS.md`](INTERVENTIONS.md) for commands, masks, annotations, failure handling, and interpretation limits.
+
 ### E4. Independent audit usefulness
 
 On a separately held-out set, introduce naturally occurring or carefully verified report errors. Compare an auditor with the explanation against the same auditor with the model's decision/confidence only. Primary outcome: error-discovery recall at a fixed false-alarm rate, with source-clustered confidence intervals. This experiment is required before claiming that explanations improve integrity auditing.

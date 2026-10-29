@@ -1,19 +1,109 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Claim-level visual intervention records",
+  "title": "Blinded model-output annotation v2 (one fixed claim and intervention)",
   "type": "object",
-  "required": ["image_id", "source_group", "claim_id", "arm", "intervention", "status"],
+  "required": [
+    "image_id",
+    "source_group",
+    "claim_id",
+    "arm",
+    "intervention",
+    "status",
+    "output_text",
+    "claim_asserted",
+    "annotator_id"
+  ],
   "properties": {
-    "image_id": {"type": "string"},
-    "source_group": {"type": "string"},
-    "claim_id": {"type": "string"},
-    "arm": {"enum": ["baseline", "G", "P"]},
-    "intervention": {"enum": ["intact", "referent_occlusion", "matched_control_occlusion"]},
-    "status": {"enum": ["complete", "failed", "missing"]},
-    "output_text": {"type": ["string", "null"]},
-    "claim_supported": {"type": ["boolean", "null"]},
-    "output_change_appropriate": {"type": ["boolean", "null"]},
-    "annotator_id": {"type": ["string", "null"]}
+    "image_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_group": {
+      "type": "string",
+      "minLength": 1
+    },
+    "claim_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "arm": {
+      "type": "string",
+      "minLength": 1
+    },
+    "intervention": {
+      "enum": [
+        "intact",
+        "referent_occlusion",
+        "matched_control_occlusion"
+      ]
+    },
+    "status": {
+      "enum": [
+        "complete",
+        "failed",
+        "missing"
+      ]
+    },
+    "output_text": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "claim_asserted": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "annotator_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
   },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "complete"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "output_text": {
+            "type": "string"
+          },
+          "claim_asserted": {
+            "type": "boolean"
+          },
+          "annotator_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "claim_asserted": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "output_text": {
+            "type": "string",
+            "pattern": "\\S"
+          }
+        }
+      }
+    }
+  ],
   "additionalProperties": false
 }

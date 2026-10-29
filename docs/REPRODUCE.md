@@ -39,4 +39,4 @@ Use one row per image and arm. Required columns are `image_id`, `seed`, `arm`, `
 
 For the planned fixed-seed comparison, run `python analysis/paired_bootstrap.py results/image_metrics.csv --model-seed 42 --arms G P --output results/paired_bootstrap.json`. The bootstrap resamples paired images; its intervals do not estimate training-seed variability.
 
-For E3, use one row per image × claim × intervention × model. See `schemas/interventions.schema.json`. Keep raw inputs/outputs access-controlled; publish only permitted aggregates.
+For E3, use one row per image × claim × intervention × model and an independent planned-claim manifest. Follow `docs/INTERVENTIONS.md` and the v2 `schemas/interventions.schema.json` / `schemas/intervention_claims.schema.json`. V1 correctness labels require re-annotation; they cannot identify claim assertion. Keep raw inputs/outputs access-controlled; publish only permitted aggregates.

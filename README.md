@@ -15,7 +15,7 @@ The included G method adds an auxiliary region loss for the prediction states th
 - `src/xai_integrity/train_native.py`: finite native LEGION training loop and receipts.
 - `scripts/launch_native.py`, `scripts/evaluate_official.py`: finite train/evaluation launchers.
 - `analysis/`: frozen-result collection and training-log audits, plus generic paired bootstrap and intervention analysis.
-- `scripts/build_interventions.py`: deterministic referent-region and matched-control occlusion image generation.
+- `scripts/build_interventions.py`: intact/referent/control triplets with exactly equal-area, same-shape disjoint masks. See [`docs/INTERVENTIONS.md`](docs/INTERVENTIONS.md) for the v2 input-validity and blinded output-annotation protocol.
 - `configs/experiment_matrix.yaml`: planned G/P and SAE-Causal experiments. It does not launch work by itself.
 - `TODO.md`: staged forward research plan, including the 3-run, single-seed training batch and gated SAE-Causal, external-domain, intervention, and auditor-utility studies.
 

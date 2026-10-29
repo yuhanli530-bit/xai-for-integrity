@@ -121,7 +121,7 @@ Run only if E1 is complete and B1–B3 pass. Compare four cells on the same seed
 - [ ] Have blinded annotators or an independent qualified process judge original support and whether the change is directionally appropriate. Keep method identity hidden during labeling.
 - [ ] Use paired analysis and cluster intervals by source. Report the full eligible denominator and exclusions. Text similarity alone is not a faithfulness endpoint.
 
-**Ready analysis scripts:** `analysis/intervention_analysis.py` accepts the annotated intervention CSV. Add schema validation and a documented example command before handoff.
+**Implemented measurement code:** `analysis/intervention_analysis.py` v2 requires an independent planned-claim manifest, input-validity labels, and all three blinded output annotations. Its primary metric is the joint intact-assert / referent-withdraw / control-retain pattern. Exact-area disjoint masks, denominator failures, and response-pattern checks have engineering tests; see `docs/INTERVENTIONS.md`. Real held-out inference, annotation, and paired multi-arm comparisons remain pending.
 
 ### Stage 6 — Independent audit utility study (E4)
 

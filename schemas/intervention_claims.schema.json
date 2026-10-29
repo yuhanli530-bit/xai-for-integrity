@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Independent planned claims and image-only input validity v2",
+  "type": "object",
+  "required": ["image_id", "source_group", "claim_id", "claim_text", "validity_status", "validity_annotator_id", "intact_supported", "referent_supported", "control_supported"],
+  "properties": {
+    "image_id": {"type": "string", "minLength": 1},
+    "source_group": {"type": "string", "minLength": 1},
+    "claim_id": {"type": "string", "minLength": 1},
+    "claim_text": {"type": "string", "minLength": 1},
+    "validity_status": {"enum": ["complete", "pending", "failed"]},
+    "validity_annotator_id": {"type": ["string", "null"]},
+    "intact_supported": {"type": ["boolean", "null"]},
+    "referent_supported": {"type": ["boolean", "null"]},
+    "control_supported": {"type": ["boolean", "null"]}
+  },
+  "allOf": [{
+    "if": {"properties": {"validity_status": {"const": "complete"}}},
+    "then": {"properties": {
+      "validity_annotator_id": {"type": "string", "minLength": 1},
+      "intact_supported": {"type": "boolean"},
+      "referent_supported": {"type": "boolean"},
+      "control_supported": {"type": "boolean"}
+    }}
+  }],
+  "additionalProperties": false
+}
