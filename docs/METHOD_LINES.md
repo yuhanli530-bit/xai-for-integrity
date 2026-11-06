@@ -41,8 +41,8 @@ This is a staged line, not a promise that the full SAE pipeline is already imple
 ## Selected references
 
 - Pach et al., [Sparse Autoencoders Learn Monosemantic Features in Vision-Language Models](https://arxiv.org/abs/2504.02821), NeurIPS 2025; [code](https://github.com/ExplainableML/sae-for-vlm). Demonstrates feature decomposition and interventions in CLIP vision encoders, including downstream VLM steering.
-- Stevens et al., [Sparse Autoencoders for Scientifically Rigorous Interpretation of Vision Models](https://arxiv.org/abs/2502.06755), 2025; [SAE-V project](https://osu-nlp-group.github.io/SAE-V/). Emphasizes testing feature hypotheses with interventions, not feature visualization alone.
-- [PatchSAE: Sparse Autoencoders for Vision Transformers with Patch-Wise Spatial Attributions](https://proceedings.iclr.cc/paper_files/paper/2025/hash/3d5b603d631d595f56bc36b373458b27-Abstract-Conference.html), ICLR 2025. Motivates spatially resolved feature attribution in ViTs.
+- Stevens et al., [Interpretable and Testable Vision Features via Sparse Autoencoders](https://arxiv.org/abs/2502.06755), 2025 preprint, v2; [SAE-V project](https://osu-nlp-group.github.io/SAE-V/). The v1 title was “Sparse Autoencoders for Scientifically Rigorous Interpretation of Vision Models.” Emphasizes testing feature hypotheses with interventions, not feature visualization alone.
+- Lim et al., [Sparse autoencoders reveal selective remapping of visual concepts during adaptation](https://proceedings.iclr.cc/paper_files/paper/2025/hash/3d5b603d631d595f56bc36b373458b27-Abstract-Conference.html), ICLR 2025. Introduces PatchSAE and motivates spatially resolved feature attribution in ViTs.
 
 ## Claims not yet supported
 
